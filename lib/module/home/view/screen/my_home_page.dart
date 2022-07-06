@@ -18,6 +18,8 @@ class MyHomePage extends StatefulWidget {
 class _MyHomePageState extends State<MyHomePage> {
   final UserBloc newBloc = UserBloc();
   Completer refreshCompleter = Completer();
+  ScrollController scrollController = ScrollController();
+  bool moreDataAvailable = true;
 
   Future<void> handleRefresh() async {
     refreshCompleter = Completer();
@@ -26,9 +28,9 @@ class _MyHomePageState extends State<MyHomePage> {
   }
 
   void pagination() {
-    newBloc.scrollController.addListener(() {
-      if (newBloc.scrollController.position.pixels ==
-          newBloc.scrollController.position.maxScrollExtent) {
+    scrollController.addListener(() {
+      if (scrollController.position.pixels ==
+          scrollController.position.maxScrollExtent) {
         newBloc.add(GetUserEvent(false));
       }
     });
@@ -78,11 +80,11 @@ class _MyHomePageState extends State<MyHomePage> {
                       handleRefresh();
                     },
                     child: ListView.separated(
-                      controller: newBloc.scrollController,
+                      controller: scrollController,
                       itemCount: state.listOfUsers.length + 1,
                       itemBuilder: (context, index) {
                         if (index == state.listOfUsers.length &&
-                            newBloc.moreDataAvailable) {
+                            moreDataAvailable) {
                           return Padding(
                             padding: const EdgeInsets.only(
                                 left: 160, bottom: 10, right: 160, top: 10),
